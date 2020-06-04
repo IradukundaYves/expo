@@ -1,0 +1,35 @@
+<?php
+include("DataBaseConnection.php");
+// prepare an insert statement
+$sql = "INSERT INTO blogs(type,title,picture,content,created_date) VALUES(?,?,?,?,?)";
+if($stmt = mysqli_prepare($conn, $sql)){
+	// bind variable to the statement as parameters
+	mysqli_stmt_bind_param($stmt,"sssss", $type,$title,$target,$content,$dat);
+
+	//set parameters
+    $type =$_REQUEST['type'];
+    $title = $_REQUEST['title'];
+    $picture = $_FILES['picture']['name'];
+    $content = $_REQUEST['content'];
+    $dat = $_REQUEST['created_date'];
+    $target = "../images/".basename($_FILES['picture']['name']);
+     move_uploaded_file($_FILES['picture']['tmp_name'], $target);
+
+	if(mysqli_stmt_execute($stmt)){
+	echo '<script>
+	        alert("reacord inserted");
+	        </script>';
+	        header('Location:../admin-dashboard.php');
+}else{
+	echo '<script>
+	        alert("ERROR: could not prepare query: $sql. " .$conn->error;
+	        </script>';
+}
+
+}
+//close prepared statement
+$stmt->close();
+//close connection
+$conn->close();
+
+?>
